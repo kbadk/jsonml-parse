@@ -67,7 +67,9 @@ module.exports = function(markup, callback, options) {
         return parser;
     } else {
         parser.pipe(concat({ encoding: 'object' }, function(data) {
-            callback(null, data[1] ? data : data[0]);
+            if (!data[1]) data = data[0];
+            if (data[0] === "\n" && data[1]) data = data[1];
+            callback(null, data);
         }));
         parser.on('error', callback);
         parser.end(markup);
